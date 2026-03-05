@@ -1,0 +1,34 @@
+version: "3.9"
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mcp_tool_registry_web
+    environment:
+      - PYTHONUNBUFFERED=1
+      - DATABASE_URL=postgresql://mcp_user:mcp_pass@db:5432/mcp_db
+      - FASTAPI_HOST=0.0.0.0
+      - FASTAPI_PORT=8000
+    depends_on:
+      - db
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+
+  db:
+    image: postgres:15-alpine
+    container_name: mcp_tool_registry_db
+    environment:
+      - POSTGRES_USER=mcp_user
+      - POSTGRES_PASSWORD=mcp_pass
+      - POSTGRES_DB=mcp_db
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+
+```
